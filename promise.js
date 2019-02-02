@@ -17,19 +17,26 @@ const commits = [
   { id: 3, repoid: 2, desc: 'initial commit' }
 ];
 
-// getUser('jturello', (user) => {
-//   getRepo (user, (repo) => {
-//     getCommits (repo, (commits) => {
-//       console.log(commits);
-//     });
-//   });
-// });
+// getUser('jturello')
+//   .then(user => getRepo(user))
+//   .then(repo => getCommits(repo))
+//   .then(commits => console.log(commits))
+//   .catch(err => console.log('Error:', err.message));
 
-getUser('jturello')
-  .then(user => getRepo(user))
-  .then(repo => getCommits(repo))
-  .then(commits => console.log(commits))
-  .catch(err => console.log('Error:', err.message));
+async function displayCommits() {
+  try {
+    const user = await getUser('jturello');
+    const repo = await getRepo(user);
+    const commits = await getCommits(repo);
+    console.log(`Commits for user ${user.name} from repo ${repo.name}:`);
+    console.log(commits);
+  }
+  catch(err) {
+    console.log(`Error: ${err.message}`);
+  }
+}
+
+displayCommits();
 
 function getUser(username) {
   return new Promise( (resolve, reject) => {
@@ -65,7 +72,6 @@ function getCommits (repo) {
     setTimeout( () => {
       console.log(`Retrieving commits for repo ${JSON.stringify(repo)}...`);
       const repocommits = commits.filter( obj => obj.repoid === repo.id);
-      // console.log(`Retrieving commits for repo ${JSON.stringify(repo)} from database...`);
       if (repocommits.length === 0) {
 	reject(new Error(`No commits found for repo ${JSON.stringify(repo)}`));
       } else {
