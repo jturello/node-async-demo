@@ -1,4 +1,3 @@
-
 const users = [
   { id: 1, name: 'jturello' },
   { id: 2, name: 'mbelmont' },
@@ -23,25 +22,25 @@ const commits = [
 //   .then(commits => console.log(commits))
 //   .catch(err => console.log('Error:', err.message));
 
-async function displayCommits() {
+async function displayCommits(some_user) {
   try {
-    const user = await getUser('jturello');
+    const user = await getUser(some_user);
     const repo = await getRepo(user);
     const commits = await getCommits(repo);
     console.log(`Commits for user ${user.name} from repo ${repo.name}:`);
     console.log(commits);
+    return commits;
   }
   catch(err) {
     console.log(`Error: ${err.message}`);
   }
 }
 
-displayCommits();
+displayCommits('jturello');
 
 function getUser(username) {
   return new Promise( (resolve, reject) => {
     setTimeout(() => {
-      // console.log(`Retrieving user ${JSON.stringify(user)} from database...`);
       console.log(`Retrieving user from datastore...`);
       const user = users.find( obj => obj.name === username);  
       if (!user) {
@@ -80,4 +79,6 @@ function getCommits (repo) {
     }, 2000);
   });
 }
+
+module.exports = displayCommits;
 
